@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antar Jemput Cepat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+        main {
+            max-width: 800px;
+            margin: 2em auto;
+            padding: 2em;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 1em;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 0.5em;
+            font-size: 1em;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #hasil-pesanan, #chat-driver {
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Antar Jemput Cepat</h1>
+    </header>
+    <main>
+        <form id="form-pesanan">
+            <div class="form-group">
+                <label for="nama-penumpang">Nama Penumpang:</label>
+                <input type="text" id="nama-penumpang" required>
+            </div>
+            <div class="form-group">
+                <label for="lokasi-jemput">Lokasi Penjemputan:</label>
+                <input type="text" id="lokasi-jemput" required>
+            </div>
+            <div class="form-group">
+                <label for="lokasi-tujuan">Lokasi Tujuan:</label>
+                <input type="text" id="lokasi-tujuan" required>
+            </div>
+            <div class="form-group">
+                <label for="jenis-kendaraan">Jenis Kendaraan:</label>
+                <select id="jenis-kendaraan" required>
+                    <option value="motor">Motor</option>
+                    <option value="mobil">Mobil</option>
+                </select>
+            </div>
+            <button type="submit">Pesan Perjalanan</button>
+        </form>
+
+        <div id="hasil-pesanan" style="display: none;">
+            <h2>Detail Pesanan</h2>
+            <p id="detail-pesanan"></p>
+            <button id="hubungi-driver">Hubungi Driver</button>
+        </div>
+
+        <div id="chat-driver" style="display: none;">
+            <h2>Chat dengan Driver</h2>
+            <p>Klik tombol di bawah untuk membuka chat WhatsApp dengan driver:</p>
+            <button id="buka-whatsapp">Buka WhatsApp</button>
+        </div>
+
+        <div id="daftar-driver" style="margin-top: 2em;">
+            <h2>Daftar sebagai Driver</h2>
+            <form id="form-daftar-driver">
+                <div class="form-group">
+                    <label for="nama-driver">Nama Driver:</label>
+                    <input type="text" id="nama-driver" required>
+                </div>
+                <div class="form-group">
+                    <label for="nomor-wa-driver">Nomor WhatsApp:</label>
+                    <input type="tel" id="nomor-wa-driver" required>
+                </div>
+                <button type="submit">Daftar sebagai Driver</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Simulasi database driver (dalam praktiknya, ini akan berada di server)
+        const drivers = [
+            { nama: "Budi", nomorWA: "6281234567890" },
+            { nama: "Ani", nomorWA: "6289876543210" },
+            { nama: "Citra", nomorWA: "6287654321098" }
+        ];
+
+        document.getElementById('form-pesanan').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const namaPenumpang = document.getElementById('nama-penumpang').value;
+            const lokasiJemput = document.getElementById('lokasi-jemput').value;
+            const lokasiTujuan = document.getElementById('lokasi-tujuan').value;
+            const jenisKendaraan = document.getElementById('jenis-kendaraan').value;
+
+            // Simulasi pemilihan driver acak
+            const selectedDriver = drivers[Math.floor(Math.random() * drivers.length)];
+
+            const detailPesanan = `
+                Nama Penumpang: ${namaPenumpang}<br>
+                Lokasi Jemput: ${lokasiJemput}<br>
+                Lokasi Tujuan: ${lokasiTujuan}<br>
+                Jenis Kendaraan: ${jenisKendaraan}<br>
+                Driver: ${selectedDriver.nama}
+            `;
+
+            document.getElementById('detail-pesanan').innerHTML = detailPesanan;
+            document.getElementById('hasil-pesanan').style.display = 'block';
+
+            // Menyimpan nomor WhatsApp driver untuk digunakan nanti
+            document.getElementById('hubungi-driver').setAttribute('data-wa', selectedDriver.nomorWA);
+        });
+
+        document.getElementById('hubungi-driver').addEventListener('click', function() {
+            document.getElementById('chat-driver').style.display = 'block';
+        });
+
+        document.getElementById('buka-whatsapp').addEventListener('click', function() {
+            const nomorWA = document.getElementById('hubungi-driver').getAttribute('data-wa');
+            const message = encodeURIComponent("Halo, saya penumpang dari Antar Jemput Cepat.");
+            window.open(`https://wa.me/${nomorWA}?text=${message}`, '_blank');
+        });
+
+        document.getElementById('form-daftar-driver').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const namaDriver = document.getElementById('nama-driver').value;
+            const nomorWADriver = document.getElementById('nomor-wa-driver').value;
+
+            // Simulasi penyimpanan data driver baru
+            drivers.push({ nama: namaDriver, nomorWA: nomorWADriver });
+            alert(`Terima kasih, ${namaDriver}! Anda telah terdaftar sebagai driver.`);
+
+            // Reset form
+            this.reset();
+        });
+    </script>
+</body>
+</html>
